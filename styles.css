@@ -485,7 +485,7 @@ body {
   background-color: var(--color-white);
   border: var(--border-md);
   padding: var(--space-lg);
-  height: calc(1.4em * 3 + var(--space-lg) * 2);
+  height: calc(1.4em * 6 + var(--space-lg) * 2);
   overflow: hidden;
   box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.1);
   font-family: 'Courier New', monospace;
@@ -565,7 +565,7 @@ body {
   .terminal-input {
     font-size: 14px;
     padding: var(--space-md);
-    height: calc(1.4em * 3 + var(--space-md) * 2);
+    height: calc(1.4em * 6 + var(--space-md) * 2);
   }
 
 

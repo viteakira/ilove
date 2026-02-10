@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="An interactive Valentine's Day pixel art heart"
+    />
+    <title>I Love ♥</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="valentine-container">
+      <div class="browser-window">
+        <div class="browser-chrome">
+          <div class="browser-title-bar">
+            <div class="browser-title-text">
+              <div class="browser-icon">♥</div>
+              <div>Love Browser</div>
+            </div>
+            <div class="browser-controls">
+              <div class="browser-control minimize">_</div>
+              <div class="browser-control maximize">□</div>
+              <div class="browser-control close">×</div>
+            </div>
+          </div>
+          <div class="browser-tab-strip">
+            <div class="browser-tab active">
+              <span class="tab-icon">
+                <span class="tab-favicon" aria-hidden="true"></span>
+                <span class="tab-heart">♥</span>
+              </span>
+              <span class="tab-label">Fill Your Heart</span>
+            </div>
+            <div class="browser-tab inactive">
+              <span class="tab-label">To Be Announced...</span>
+            </div>
+          </div>
+          <div class="browser-toolbar">
+            <div class="browser-nav">
+              <button class="toolbar-button" type="button" aria-label="Back">
+                &lt;
+              </button>
+              <button
+                class="toolbar-button"
+                type="button"
+                aria-label="Forward"
+              >
+                &gt;
+              </button>
+              <button class="toolbar-button" type="button" aria-label="Reload">
+                o
+              </button>
+            </div>
+            <div class="browser-address">
+              <input
+                class="address-input"
+                type="text"
+                value="https://heart.local"
+                readonly
+              />
+              <button class="address-go" type="button">Go</button>
+              <button class="bookmark-button" type="button" aria-label="Bookmark">
+                ★
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="browser-content">
+          <div class="content-area">
+            <div class="heart-container" id="heartContainer">
+              <svg class="heart-pulse-ring" viewBox="0 0 10 9">
+                <g stroke="currentColor" stroke-width="0.3" fill="none">
+                  <rect x="2" y="1" width="1" height="1" />
+                  <rect x="3" y="1" width="1" height="1" />
+                  <rect x="6" y="1" width="1" height="1" />
+                  <rect x="7" y="1" width="1" height="1" />
+                  <rect x="1" y="2" width="1" height="1" />
+                  <rect x="4" y="2" width="1" height="1" />
+                  <rect x="5" y="2" width="1" height="1" />
+                  <rect x="8" y="2" width="1" height="1" />
+                  <rect x="1" y="3" width="1" height="1" />
+                  <rect x="8" y="3" width="1" height="1" />
+                  <rect x="1" y="4" width="1" height="1" />
+                  <rect x="8" y="4" width="1" height="1" />
+                  <rect x="2" y="5" width="1" height="1" />
+                  <rect x="7" y="5" width="1" height="1" />
+                  <rect x="3" y="6" width="1" height="1" />
+                  <rect x="6" y="6" width="1" height="1" />
+                  <rect x="4" y="7" width="1" height="1" />
+                  <rect x="5" y="7" width="1" height="1" />
+                </g>
+              </svg>
+              <svg class="heart-pulse-ring delay" viewBox="0 0 10 9">
+                <g stroke="currentColor" stroke-width="0.3" fill="none">
+                  <rect x="2" y="1" width="1" height="1" />
+                  <rect x="3" y="1" width="1" height="1" />
+                  <rect x="6" y="1" width="1" height="1" />
+                  <rect x="7" y="1" width="1" height="1" />
+                  <rect x="1" y="2" width="1" height="1" />
+                  <rect x="4" y="2" width="1" height="1" />
+                  <rect x="5" y="2" width="1" height="1" />
+                  <rect x="8" y="2" width="1" height="1" />
+                  <rect x="1" y="3" width="1" height="1" />
+                  <rect x="8" y="3" width="1" height="1" />
+                  <rect x="1" y="4" width="1" height="1" />
+                  <rect x="8" y="4" width="1" height="1" />
+                  <rect x="2" y="5" width="1" height="1" />
+                  <rect x="7" y="5" width="1" height="1" />
+                  <rect x="3" y="6" width="1" height="1" />
+                  <rect x="6" y="6" width="1" height="1" />
+                  <rect x="4" y="7" width="1" height="1" />
+                  <rect x="5" y="7" width="1" height="1" />
+                </g>
+              </svg>
+              <div class="pixel-heart" id="pixelHeart"></div>
+            </div>
+
+            <div class="terminal" id="terminal">
+              <div class="terminal-input">
+                <div>
+                  <span class="terminal-prompt">&gt; </span>
+                  <span
+                    class="terminal-prefix"
+                    id="prefix"
+                    style="display: none"
+                    >i love
+                  </span>
+                  <span class="terminal-text" id="terminalText"></span>
+                  <span class="terminal-cursor" id="cursor">_</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="browser-status-bar">
+          <span class="status-badge">HTML 3.2 / 56k</span>
+          <span id="statusBar" class="status-center">♥</span>
+          <span id="statusHint" class="status-hint">Ready</span>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -202,7 +202,7 @@ function handleHeartClick() {
 
   let message =
     state.clickCount > TOTAL_HEART_PIXELS
-      ? "the way you love me... i can never get enough of it... and hope it will never ends... i love you so much kitten..."
+      ? "the way you love me... i can never get enough of it... and hope it will never ends... i love you so much kitten... happy valentines."
       : getUnusedMessage();
   startTypewriter(message);
 

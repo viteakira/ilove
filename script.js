@@ -41,6 +41,23 @@ const LOVE_MESSAGES = [
   "how you throw dishes in the garbage just so u don't have to wash them...",
 ];
 
+const SONGS = [
+  "killing-an-afternoon",
+  "anirak",
+  "g.o.a.t",
+  "do-you-read-me",
+  "philophobia",
+  "good-looking",
+  "telephone",
+  "ates-edecek-misin",
+  "super-ask-sarkisi",
+  "melissa",
+  "stress-relief",
+  "origami",
+  "from-the-gallows",
+  "dilerim-ki",
+  "hakkinda-her-seyi-duymak-istiyorum",
+];
 
 const HEART_SHAPE = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -57,31 +74,60 @@ const HEART_SHAPE = [
 const PIXEL_SIZE = 20;
 const TOTAL_HEART_PIXELS = 40;
 
-let state = {
-  activated: false,
-  clickCount: 0,
-  typewriterInterval: null,
-  cursorInterval: null,
-  audioContext: null,
-  statusTimeout: null,
-  shownMessages: new Set(),
+const state = {
+  activeTab: "heart",
+  heart: {
+    activated: false,
+    clickCount: 0,
+    typewriterInterval: null,
+    cursorInterval: null,
+    audioContext: null,
+    statusTimeout: null,
+    shownMessages: new Set(),
+  },
+  music: {
+    songIndex: 0,
+    isPlaying: false,
+    volume: 0.7,
+  },
 };
 
 const elements = {
+  tabs: document.querySelectorAll(".browser-tab[data-tab]"),
+  panels: document.querySelectorAll(".tab-panel"),
+  addressInput: document.querySelector(".address-input"),
+  statusBar: document.getElementById("statusBar"),
+  statusHint: document.getElementById("statusHint"),
   heart: document.getElementById("pixelHeart"),
   heartContainer: document.getElementById("heartContainer"),
   terminal: document.getElementById("terminal"),
   terminalText: document.getElementById("terminalText"),
   cursor: document.getElementById("cursor"),
   prefix: document.getElementById("prefix"),
-  statusBar: document.getElementById("statusBar"),
-  statusHint: document.getElementById("statusHint"),
+  musicContainer: document.getElementById("musicContainer"),
+  musicState: document.getElementById("musicState"),
+  playBtn: document.getElementById("play"),
+  prevBtn: document.getElementById("prev"),
+  nextBtn: document.getElementById("next"),
+  audio: document.getElementById("audio"),
+  progress: document.getElementById("progress"),
+  progressContainer: document.getElementById("progressContainer"),
+  musicTitle: document.getElementById("musicTitle"),
+  currTime: document.getElementById("currTime"),
+  durTime: document.getElementById("durTime"),
+  volumeSlider: document.getElementById("volumeSlider"),
+  volumeValue: document.getElementById("volumeValue"),
 };
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
 
 function renderHeart() {
   elements.heart.innerHTML = "";
-  elements.heartContainer.classList.toggle("activated", state.activated);
+  elements.heartContainer.classList.toggle("activated", state.heart.activated);
   const heartPixels = [];
+
   HEART_SHAPE.forEach((row, y) => {
     row.forEach((cell, x) => {
       if (cell === 1) {
@@ -89,9 +135,10 @@ function renderHeart() {
       }
     });
   });
+
   heartPixels.reverse();
 
-  const pixelsToFill = Math.min(state.clickCount, heartPixels.length);
+  const pixelsToFill = Math.min(state.heart.clickCount, heartPixels.length);
   const fillRatio = pixelsToFill / heartPixels.length;
   elements.heart.style.setProperty("--fill-ratio", fillRatio);
 
@@ -108,22 +155,17 @@ function renderHeart() {
     });
   });
 
-  const intensity = Math.min(state.clickCount / 10, 1);
-  elements.heart.classList.toggle("activated", state.activated);
-  elements.heart.classList.toggle(
-    "glowing",
-    state.activated && intensity > 0.5,
-  );
+  const intensity = Math.min(state.heart.clickCount / 10, 1);
+  elements.heart.classList.toggle("activated", state.heart.activated);
+  elements.heart.classList.toggle("glowing", state.heart.activated && intensity > 0.5);
 }
 
-function playSound() {
-  if (!state.audioContext) {
-    state.audioContext = new (
-      window.AudioContext || window.webkitAudioContext
-    )();
+function playClickBeep() {
+  if (!state.heart.audioContext) {
+    state.heart.audioContext = new (window.AudioContext || window.webkitAudioContext)();
   }
 
-  const ctx = state.audioContext;
+  const ctx = state.heart.audioContext;
   const oscillator = ctx.createOscillator();
   const gainNode = ctx.createGain();
   oscillator.connect(gainNode);
@@ -137,26 +179,26 @@ function playSound() {
 }
 
 function startTypewriter(message) {
-  if (state.typewriterInterval) clearInterval(state.typewriterInterval);
+  if (state.heart.typewriterInterval) clearInterval(state.heart.typewriterInterval);
 
   elements.prefix.style.display = message ? "inline" : "none";
   let index = 0;
 
-  state.typewriterInterval = setInterval(() => {
+  state.heart.typewriterInterval = setInterval(() => {
     if (index < message.length) {
       elements.terminalText.textContent = message.slice(0, index + 1);
       index++;
     } else {
-      clearInterval(state.typewriterInterval);
+      clearInterval(state.heart.typewriterInterval);
     }
   }, 50);
 }
 
 function startCursorBlink() {
-  if (state.cursorInterval) clearInterval(state.cursorInterval);
+  if (state.heart.cursorInterval) clearInterval(state.heart.cursorInterval);
   let isVisible = true;
 
-  state.cursorInterval = setInterval(() => {
+  state.heart.cursorInterval = setInterval(() => {
     isVisible = !isVisible;
     elements.cursor.classList.toggle("visible", isVisible);
     elements.cursor.classList.toggle("hidden", !isVisible);
@@ -165,76 +207,243 @@ function startCursorBlink() {
 
 function getUnusedMessage() {
   const availableMessages = LOVE_MESSAGES.filter(
-    (_, index) => !state.shownMessages.has(index),
+    (_, index) => !state.heart.shownMessages.has(index),
   );
 
   if (availableMessages.length === 0) {
-    state.shownMessages.clear();
+    state.heart.shownMessages.clear();
     return LOVE_MESSAGES[0];
   }
+
   const randomIndex = Math.floor(Math.random() * availableMessages.length);
   const selectedMessage = availableMessages[randomIndex];
   const originalIndex = LOVE_MESSAGES.indexOf(selectedMessage);
 
-  state.shownMessages.add(originalIndex);
+  state.heart.shownMessages.add(originalIndex);
   return selectedMessage;
 }
 
-function handleHeartClick() {
-  state.clickCount++;
-  if (!state.activated) {
-    state.activated = true;
-    elements.terminal.classList.remove("initializing");
-    elements.terminal.classList.add("active");
-    startCursorBlink();
-  }
-
-  const intensity = Math.min(state.clickCount / 10, 1);
-  const heartbeatDuration = Math.max(1.6 - intensity * 0.4, 1.2);
-  elements.heartContainer.style.setProperty(
-    "--heartbeat-duration",
-    `${heartbeatDuration}s`,
-  );
-  elements.heart.style.setProperty(
-    "--heartbeat-duration",
-    `${heartbeatDuration}s`,
-  );
-
-  let message =
-    state.clickCount > TOTAL_HEART_PIXELS
-      ? "the way you love me... i can never get enough of it... and hope it will never ends... i love you so much kitten... happy valentines."
-      : getUnusedMessage();
-  startTypewriter(message);
-
-  playSound();
-
-  renderHeart();
-
-  updateStatusBar();
-  setStatusHint("Loading...");
-  if (state.statusTimeout) {
-    clearTimeout(state.statusTimeout);
-  }
-  state.statusTimeout = setTimeout(() => {
-    setStatusHint("Ready");
-  }, 600);
-}
-
-function updateStatusBar() {
+function updateHeartStatusBar() {
   elements.statusBar.textContent =
-    state.clickCount === 0 ? "♥" : `${state.clickCount} ♥`;
+    state.heart.clickCount === 0 ? "♥" : `${state.heart.clickCount} ♥`;
 }
 
 function setStatusHint(message) {
   elements.statusHint.textContent = message;
 }
 
-function init() {
+function handleHeartClick() {
+  state.heart.clickCount++;
+
+  if (!state.heart.activated) {
+    state.heart.activated = true;
+    elements.terminal.classList.remove("initializing");
+    elements.terminal.classList.add("active");
+    startCursorBlink();
+  }
+
+  const intensity = Math.min(state.heart.clickCount / 10, 1);
+  const heartbeatDuration = Math.max(1.6 - intensity * 0.4, 1.2);
+  elements.heartContainer.style.setProperty("--heartbeat-duration", `${heartbeatDuration}s`);
+  elements.heart.style.setProperty("--heartbeat-duration", `${heartbeatDuration}s`);
+
+  const message =
+    state.heart.clickCount > TOTAL_HEART_PIXELS
+      ? "the way you love me... i can never get enough of it... and hope it will never ends... i love you so much kitten... happy valentines."
+      : getUnusedMessage();
+
+  startTypewriter(message);
+  playClickBeep();
+  renderHeart();
+  updateHeartStatusBar();
+  setStatusHint("Loading...");
+
+  if (state.heart.statusTimeout) clearTimeout(state.heart.statusTimeout);
+  state.heart.statusTimeout = setTimeout(() => {
+    setStatusHint("Ready");
+  }, 600);
+}
+
+function loadSong(song) {
+  elements.musicTitle.textContent = song;
+  elements.audio.src = `tracks/${song}.opus`;
+}
+
+function updateMusicButton() {
+  elements.playBtn.textContent = state.music.isPlaying ? "||" : ">";
+  elements.musicState.textContent = state.music.isPlaying ? "playing" : "paused";
+}
+
+function setMusicVolume(volume) {
+  state.music.volume = clamp(volume, 0, 1);
+  elements.audio.volume = state.music.volume;
+
+  const volumePercent = Math.round(state.music.volume * 100);
+  elements.volumeSlider.value = String(volumePercent);
+  elements.volumeValue.textContent = `${volumePercent}%`;
+  elements.volumeSlider.style.setProperty("--volume-percent", `${volumePercent}%`);
+}
+
+function playSong() {
+  state.music.isPlaying = true;
+  elements.musicContainer.classList.add("play");
+  updateMusicButton();
+
+  const playPromise = elements.audio.play();
+  if (playPromise && typeof playPromise.catch === "function") {
+    playPromise.catch(() => {
+      state.music.isPlaying = false;
+      elements.musicContainer.classList.remove("play");
+      updateMusicButton();
+    });
+  }
+}
+
+function pauseSong() {
+  state.music.isPlaying = false;
+  elements.musicContainer.classList.remove("play");
+  updateMusicButton();
+  elements.audio.pause();
+}
+
+function prevSong() {
+  state.music.songIndex--;
+  if (state.music.songIndex < 0) {
+    state.music.songIndex = SONGS.length - 1;
+  }
+
+  loadSong(SONGS[state.music.songIndex]);
+  playSong();
+  setStatusHint("Track changed");
+}
+
+function nextSong() {
+  state.music.songIndex++;
+  if (state.music.songIndex > SONGS.length - 1) {
+    state.music.songIndex = 0;
+  }
+
+  loadSong(SONGS[state.music.songIndex]);
+  playSong();
+  setStatusHint("Track changed");
+}
+
+function updateProgress(event) {
+  const { duration, currentTime } = event.srcElement;
+  if (!duration || Number.isNaN(duration)) return;
+
+  const progressPercent = (currentTime / duration) * 100;
+  elements.progress.style.width = `${progressPercent}%`;
+}
+
+function setProgress(event) {
+  const width = elements.progressContainer.clientWidth;
+  const clickX = event.offsetX;
+  const duration = elements.audio.duration;
+  if (!duration || Number.isNaN(duration)) return;
+
+  elements.audio.currentTime = (clickX / width) * duration;
+}
+
+function updateMusicTimes(event) {
+  const { duration, currentTime } = event.srcElement;
+
+  const currMin = Math.floor(currentTime / 60) || 0;
+  const currSec = Math.floor(currentTime % 60) || 0;
+  elements.currTime.textContent = `${currMin.toString().padStart(2, "0")}:${currSec
+    .toString()
+    .padStart(2, "0")}`;
+
+  if (duration && !Number.isNaN(duration)) {
+    const durMin = Math.floor(duration / 60);
+    const durSec = Math.floor(duration % 60);
+    elements.durTime.textContent = `${durMin.toString().padStart(2, "0")}:${durSec
+      .toString()
+      .padStart(2, "0")}`;
+  } else {
+    elements.durTime.textContent = "00:00";
+  }
+}
+
+function switchTab(tabName) {
+  state.activeTab = tabName;
+
+  elements.tabs.forEach((tab) => {
+    const isActive = tab.dataset.tab === tabName;
+    tab.classList.toggle("active", isActive);
+    tab.classList.toggle("inactive", !isActive);
+    tab.setAttribute("aria-selected", String(isActive));
+  });
+
+  elements.panels.forEach((panel) => {
+    const shouldShow = panel.id === `${tabName}Panel`;
+    panel.classList.toggle("active", shouldShow);
+  });
+
+  if (tabName === "heart") {
+    elements.addressInput.value = "https://heart.local";
+    updateHeartStatusBar();
+    setStatusHint("Ready");
+  } else if (tabName === "music") {
+    elements.addressInput.value = "https://heart.local/music";
+    elements.statusBar.textContent = "♪";
+    setStatusHint("Jukebox ready");
+  } else {
+    elements.addressInput.value = "https://heart.local/memory-lane";
+    elements.statusBar.textContent = "🏞";
+    setStatusHint("Memory lane ready");
+  }
+}
+
+function initHeart() {
   renderHeart();
   elements.heartContainer.addEventListener("click", handleHeartClick);
   elements.terminal.classList.add("initializing");
   elements.cursor.classList.add("hidden");
   setStatusHint("Ready");
+}
+
+function initMusic() {
+  loadSong(SONGS[state.music.songIndex]);
+  updateMusicButton();
+  setMusicVolume(state.music.volume);
+
+  elements.playBtn.addEventListener("click", () => {
+    if (state.music.isPlaying) {
+      pauseSong();
+      setStatusHint("Paused");
+    } else {
+      playSong();
+      setStatusHint("Playing");
+    }
+  });
+
+  elements.prevBtn.addEventListener("click", prevSong);
+  elements.nextBtn.addEventListener("click", nextSong);
+  elements.audio.addEventListener("timeupdate", updateProgress);
+  elements.audio.addEventListener("timeupdate", updateMusicTimes);
+  elements.audio.addEventListener("ended", nextSong);
+  elements.progressContainer.addEventListener("click", setProgress);
+  elements.volumeSlider.addEventListener("input", (event) => {
+    const volume = Number(event.target.value) / 100;
+    setMusicVolume(volume);
+    setStatusHint("Volume tuned");
+  });
+}
+
+function initTabs() {
+  elements.tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      switchTab(tab.dataset.tab);
+    });
+  });
+}
+
+function init() {
+  initHeart();
+  initMusic();
+  initTabs();
+  switchTab("heart");
 }
 
 if (document.readyState === "loading") {

@@ -25,17 +25,52 @@
               <div class="browser-control close">×</div>
             </div>
           </div>
-          <div class="browser-tab-strip">
-            <div class="browser-tab active">
+          <div class="browser-tab-strip" role="tablist" aria-label="Love tabs">
+            <button
+              class="browser-tab active"
+              id="heartTab"
+              type="button"
+              role="tab"
+              aria-selected="true"
+              aria-controls="heartPanel"
+              data-tab="heart"
+            >
               <span class="tab-icon">
                 <span class="tab-favicon" aria-hidden="true"></span>
                 <span class="tab-heart">♥</span>
               </span>
               <span class="tab-label">Fill Your Heart</span>
-            </div>
-            <div class="browser-tab inactive">
-              <span class="tab-label">To Be Announced...</span>
-            </div>
+            </button>
+            <button
+              class="browser-tab inactive"
+              id="musicTab"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="musicPanel"
+              data-tab="music"
+            >
+              <span class="tab-icon">
+                <span class="tab-favicon" aria-hidden="true"></span>
+                <span class="tab-heart">♪</span>
+              </span>
+              <span class="tab-label">Jukebox</span>
+            </button>
+            <button
+              class="browser-tab inactive"
+              id="memoryTab"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="memoryPanel"
+              data-tab="memory"
+            >
+              <span class="tab-icon">
+                <span class="tab-favicon" aria-hidden="true"></span>
+                <span class="tab-heart">🏞</span>
+              </span>
+              <span class="tab-label">Memory lane</span>
+            </button>
           </div>
           <div class="browser-toolbar">
             <div class="browser-nav">
@@ -61,7 +96,11 @@
                 readonly
               />
               <button class="address-go" type="button">Go</button>
-              <button class="bookmark-button" type="button" aria-label="Bookmark">
+              <button
+                class="bookmark-button"
+                type="button"
+                aria-label="Bookmark"
+              >
                 ★
               </button>
             </div>
@@ -70,69 +109,150 @@
 
         <div class="browser-content">
           <div class="content-area">
-            <div class="heart-container" id="heartContainer">
-              <svg class="heart-pulse-ring" viewBox="0 0 10 9">
-                <g stroke="currentColor" stroke-width="0.3" fill="none">
-                  <rect x="2" y="1" width="1" height="1" />
-                  <rect x="3" y="1" width="1" height="1" />
-                  <rect x="6" y="1" width="1" height="1" />
-                  <rect x="7" y="1" width="1" height="1" />
-                  <rect x="1" y="2" width="1" height="1" />
-                  <rect x="4" y="2" width="1" height="1" />
-                  <rect x="5" y="2" width="1" height="1" />
-                  <rect x="8" y="2" width="1" height="1" />
-                  <rect x="1" y="3" width="1" height="1" />
-                  <rect x="8" y="3" width="1" height="1" />
-                  <rect x="1" y="4" width="1" height="1" />
-                  <rect x="8" y="4" width="1" height="1" />
-                  <rect x="2" y="5" width="1" height="1" />
-                  <rect x="7" y="5" width="1" height="1" />
-                  <rect x="3" y="6" width="1" height="1" />
-                  <rect x="6" y="6" width="1" height="1" />
-                  <rect x="4" y="7" width="1" height="1" />
-                  <rect x="5" y="7" width="1" height="1" />
-                </g>
-              </svg>
-              <svg class="heart-pulse-ring delay" viewBox="0 0 10 9">
-                <g stroke="currentColor" stroke-width="0.3" fill="none">
-                  <rect x="2" y="1" width="1" height="1" />
-                  <rect x="3" y="1" width="1" height="1" />
-                  <rect x="6" y="1" width="1" height="1" />
-                  <rect x="7" y="1" width="1" height="1" />
-                  <rect x="1" y="2" width="1" height="1" />
-                  <rect x="4" y="2" width="1" height="1" />
-                  <rect x="5" y="2" width="1" height="1" />
-                  <rect x="8" y="2" width="1" height="1" />
-                  <rect x="1" y="3" width="1" height="1" />
-                  <rect x="8" y="3" width="1" height="1" />
-                  <rect x="1" y="4" width="1" height="1" />
-                  <rect x="8" y="4" width="1" height="1" />
-                  <rect x="2" y="5" width="1" height="1" />
-                  <rect x="7" y="5" width="1" height="1" />
-                  <rect x="3" y="6" width="1" height="1" />
-                  <rect x="6" y="6" width="1" height="1" />
-                  <rect x="4" y="7" width="1" height="1" />
-                  <rect x="5" y="7" width="1" height="1" />
-                </g>
-              </svg>
-              <div class="pixel-heart" id="pixelHeart"></div>
-            </div>
+            <section
+              class="tab-panel active"
+              id="heartPanel"
+              role="tabpanel"
+              aria-labelledby="heartTab"
+            >
+              <div class="heart-container" id="heartContainer">
+                <svg class="heart-pulse-ring" viewBox="0 0 10 9">
+                  <g stroke="currentColor" stroke-width="0.3" fill="none">
+                    <rect x="2" y="1" width="1" height="1" />
+                    <rect x="3" y="1" width="1" height="1" />
+                    <rect x="6" y="1" width="1" height="1" />
+                    <rect x="7" y="1" width="1" height="1" />
+                    <rect x="1" y="2" width="1" height="1" />
+                    <rect x="4" y="2" width="1" height="1" />
+                    <rect x="5" y="2" width="1" height="1" />
+                    <rect x="8" y="2" width="1" height="1" />
+                    <rect x="1" y="3" width="1" height="1" />
+                    <rect x="8" y="3" width="1" height="1" />
+                    <rect x="1" y="4" width="1" height="1" />
+                    <rect x="8" y="4" width="1" height="1" />
+                    <rect x="2" y="5" width="1" height="1" />
+                    <rect x="7" y="5" width="1" height="1" />
+                    <rect x="3" y="6" width="1" height="1" />
+                    <rect x="6" y="6" width="1" height="1" />
+                    <rect x="4" y="7" width="1" height="1" />
+                    <rect x="5" y="7" width="1" height="1" />
+                  </g>
+                </svg>
+                <svg class="heart-pulse-ring delay" viewBox="0 0 10 9">
+                  <g stroke="currentColor" stroke-width="0.3" fill="none">
+                    <rect x="2" y="1" width="1" height="1" />
+                    <rect x="3" y="1" width="1" height="1" />
+                    <rect x="6" y="1" width="1" height="1" />
+                    <rect x="7" y="1" width="1" height="1" />
+                    <rect x="1" y="2" width="1" height="1" />
+                    <rect x="4" y="2" width="1" height="1" />
+                    <rect x="5" y="2" width="1" height="1" />
+                    <rect x="8" y="2" width="1" height="1" />
+                    <rect x="1" y="3" width="1" height="1" />
+                    <rect x="8" y="3" width="1" height="1" />
+                    <rect x="1" y="4" width="1" height="1" />
+                    <rect x="8" y="4" width="1" height="1" />
+                    <rect x="2" y="5" width="1" height="1" />
+                    <rect x="7" y="5" width="1" height="1" />
+                    <rect x="3" y="6" width="1" height="1" />
+                    <rect x="6" y="6" width="1" height="1" />
+                    <rect x="4" y="7" width="1" height="1" />
+                    <rect x="5" y="7" width="1" height="1" />
+                  </g>
+                </svg>
+                <div class="pixel-heart" id="pixelHeart"></div>
+              </div>
 
-            <div class="terminal" id="terminal">
-              <div class="terminal-input">
-                <div>
-                  <span class="terminal-prompt">&gt; </span>
-                  <span
-                    class="terminal-prefix"
-                    id="prefix"
-                    style="display: none"
-                    >i love
-                  </span>
-                  <span class="terminal-text" id="terminalText"></span>
-                  <span class="terminal-cursor" id="cursor">_</span>
+              <div class="terminal" id="terminal">
+                <div class="terminal-input">
+                  <div>
+                    <span class="terminal-prompt">&gt; </span>
+                    <span class="terminal-prefix" id="prefix" style="display: none"
+                      >i love
+                    </span>
+                    <span class="terminal-text" id="terminalText"></span>
+                    <span class="terminal-cursor" id="cursor">_</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            </section>
+
+            <section
+              class="tab-panel"
+              id="musicPanel"
+              role="tabpanel"
+              aria-labelledby="musicTab"
+            >
+              <div class="jukebox" id="musicContainer">
+                <div class="jukebox-header">
+                  <span class="jukebox-tag">for my favorite person</span>
+                  <span class="jukebox-led" id="musicState">stopped</span>
+                </div>
+
+                <div class="jukebox-display">
+                  <div class="music-title" id="musicTitle">killing-an-afternoon</div>
+                  <div class="progress-track" id="progressContainer">
+                    <div class="progress-bar" id="progress"></div>
+                  </div>
+                  <div class="time-row">
+                    <span id="currTime">00:00</span>
+                    <span id="durTime">00:00</span>
+                  </div>
+                </div>
+
+                <div class="volume-wrap">
+                  <span class="volume-label">Volume</span>
+                  <div class="volume-row">
+                    <input
+                      id="volumeSlider"
+                      class="volume-slider"
+                      type="range"
+                      min="0"
+                      max="100"
+                      value="70"
+                      step="1"
+                      aria-label="Volume"
+                    />
+                    <span class="volume-value" id="volumeValue">70%</span>
+                  </div>
+                </div>
+
+                <div class="music-controls">
+                  <button id="prev" class="music-btn" type="button" aria-label="Previous">
+                    &lt;&lt;
+                  </button>
+                  <button id="play" class="music-btn music-btn-big" type="button" aria-label="Play">
+                    &gt;
+                  </button>
+                  <button id="next" class="music-btn" type="button" aria-label="Next">
+                    &gt;&gt;
+                  </button>
+                </div>
+
+                <audio src="" id="audio"></audio>
+              </div>
+            </section>
+
+            <section
+              class="tab-panel"
+              id="memoryPanel"
+              role="tabpanel"
+              aria-labelledby="memoryTab"
+            >
+              <div class="jukebox">
+                <div class="jukebox-header">
+                  <span class="jukebox-tag">Memory lane</span>
+                  <span class="jukebox-led">soon</span>
+                </div>
+                <div class="jukebox-display">
+                  <div class="music-title">our sweetest moments, archived here 🏞</div>
+                  <div class="time-row">
+                    <span>status</span>
+                    <span>collecting</span>
+                  </div>
+                </div>
+              </div>
+            </section>
           </div>
         </div>
 
